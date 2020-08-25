@@ -1,0 +1,54 @@
+{
+  "name": "@patataf/frontend",
+  "version": "0.1.0",
+  "description": "Patataf frontend.",
+  "keywords": [
+    "patataf",
+    "frontend",
+    "framework"
+  ],
+  "author": "bpatath <github@bp.patathouse.fr>",
+  "homepage": "https://github.com/bpatath/patataf#readme",
+  "license": "AGPL-3.0-or-later",
+  "main": "lib/index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "files": [
+    "lib"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bpatath/patataf.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/bpatath/patataf/issues"
+  },
+  "peerDependencies": {
+    "react": "^16.13.1",
+    "react-router-dom": "^5.2.0"
+  },
+  "dependencies": {
+    "@patataf/ui": "^0.1.0",
+    "@apollo/client": "^3.1.1",
+    "graphql": "^15.3.0",
+    "immutable": "^4.0.0-rc.12",
+    "react-redux": "^7.2.1",
+    "redux": "^4.0.5",
+    "subscriptions-transport-ws": "^0.9.17"
+  },
+  "devDependencies": {
+    "@types/koa": "^2.11.4",
+    "@types/react": "^16.9.46",
+    "@types/react-dom": "^16.9.8",
+    "@types/react-redux": "^7.1.9",
+    "@types/react-router-dom": "^5.1.5",
+    "@types/styled-components": "^5.1.2"
+  }
+}

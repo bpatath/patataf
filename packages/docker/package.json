@@ -1,0 +1,33 @@
+{
+  "name": "@patataf/docker",
+  "version": "0.1.0",
+  "description": "A dockerfile generator for Patataf.",
+  "keywords": [
+    "patataf",
+    "docker",
+    "dockerfile"
+  ],
+  "author": "bpatath <github@bp.patathouse.fr>",
+  "homepage": "https://github.com/bpatath/patataf#readme",
+  "license": "AGPL-3.0-or-later",
+  "main": "lib/index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "files": [
+    "lib"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bpatath/patataf.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/bpatath/patataf/issues"
+  }
+}

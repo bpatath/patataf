@@ -1,0 +1,6 @@
+{
+  "extends": "../../.babelrc.js",
+  "plugins": [
+    "babel-plugin-styled-components"
+  ]
+}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactElement } from "react";
 import styled from "styled-components";
 import { Theme } from "../theme";
 
@@ -27,7 +27,7 @@ const CenteredPageInternalContainer = styled.div<StyledProps>`
   ${(props) => (props.centered ? "text-align: center" : null)};
 `;
 
-export default function CenteredPage(props: Props): React.ReactNode {
+export default function CenteredPage(props: Props): ReactElement {
   return (
     <CenteredPageExternalContainer {...props}>
       <CenteredPageInternalContainer {...props}>

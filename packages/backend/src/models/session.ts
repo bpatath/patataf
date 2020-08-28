@@ -6,7 +6,7 @@ import {
   AllowNull,
 } from "sequelize-typescript";
 
-export abstract class SessionBase extends Model<SessionBase> {
+export class SessionBase extends Model<SessionBase> {
   @PrimaryKey
   @AllowNull(false)
   @Column

@@ -1,0 +1,69 @@
+{
+  "name": "@patataf/webpack",
+  "version": "0.1.0",
+  "description": "Webpack configuration for Patataf, CRA-style",
+  "keywords": [
+    "patataf",
+    "webpack"
+  ],
+  "author": "bpatath <github@bp.patathouse.fr>",
+  "homepage": "https://github.com/bpatath/patataf#readme",
+  "license": "AGPL-3.0-or-later",
+  "main": "lib/index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "bin": {
+    "pf-build": "lib/bin/build.js",
+    "pf-start": "lib/bin/start.js"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bpatath/patataf.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/bpatath/patataf/issues"
+  },
+  "dependencies": {
+    "@babel/core": "^7.11.6",
+    "@babel/plugin-proposal-class-properties": "^7.10.4",
+    "@babel/plugin-proposal-decorators": "^7.10.5",
+    "@babel/plugin-proposal-object-rest-spread": "^7.11.0",
+    "@babel/preset-env": "^7.11.5",
+    "@babel/preset-react": "^7.10.4",
+    "@babel/preset-typescript": "^7.10.4",
+    "@pmmmwh/react-refresh-webpack-plugin": "^0.4.1",
+    "babel-loader": "^8.1.0",
+    "babel-plugin-transform-typescript-metadata": "^0.3.0",
+    "koa": "^2.13.0",
+    "koa-mount": "^4.0.0",
+    "koa-webpack": "^6.0.0",
+    "memfs": "^3.2.0",
+    "ora": "^5.1.0",
+    "react-dev-utils": "^10.2.1",
+    "react-refresh": "^0.8.3",
+    "require-from-string": "^2.0.2",
+    "resolve": "^1.17.0",
+    "typescript": "^4.0.2",
+    "webpack": "^4.44.1",
+    "webpack-merge": "^5.1.4",
+    "webpack-node-externals": "^2.5.2"
+  },
+  "devDependencies": {
+    "@types/koa-webpack": "^6.0.0",
+    "@types/react-dev-utils": "^9.0.4",
+    "@types/require-from-string": "^1.2.0",
+    "@types/webpack": "^4.41.21",
+    "@types/webpack-node-externals": "^2.5.0"
+  }
+}

@@ -1,3 +1,4 @@
+import { DataTypes } from "sequelize";
 import {
   Table,
   Column,
@@ -9,15 +10,15 @@ import {
 export class SessionBase extends Model<SessionBase> {
   @PrimaryKey
   @AllowNull(false)
-  @Column
+  @Column(DataTypes.STRING)
   id!: string;
 
   @AllowNull(false)
-  @Column
+  @Column(DataTypes.STRING)
   data!: string;
 
   @AllowNull(false)
-  @Column
+  @Column(DataTypes.DATE)
   expires!: Date;
 }
 

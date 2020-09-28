@@ -1,3 +1,4 @@
+import { DataTypes } from "sequelize";
 import {
   Table,
   Column,
@@ -6,20 +7,19 @@ import {
   AutoIncrement,
   AllowNull,
 } from "sequelize-typescript";
-import { DataTypes } from "sequelize";
 
 export class UserBase extends Model<UserBase> {
   @PrimaryKey
   @AutoIncrement
   @AllowNull(false)
-  @Column
+  @Column(DataTypes.INTEGER)
   id!: number;
 
   @AllowNull(false)
-  @Column
+  @Column(DataTypes.STRING)
   username!: string;
 
-  @Column(DataTypes.TEXT)
+  @Column(DataTypes.STRING)
   password!: string | null;
 
   static async login(options: {

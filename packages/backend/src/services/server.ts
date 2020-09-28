@@ -1,10 +1,11 @@
 import env from "./env";
 import logging from "./logging";
-import Koa from "koa";
+import Koa, { Middleware } from "koa";
+import compose from "koa-compose";
 
-import { addSessionMiddleware } from "./sessions";
-import { addAuthenticationMiddleware } from "./auth";
-import { addApolloMiddleware } from "./apollo";
+import { getSessionMiddleware } from "./sessions";
+import { getAuthenticationMiddleware } from "./auth";
+import { getApolloMiddleware } from "./apollo";
 
 import { GraphQLSchema } from "graphql";
 import User, { UserBase } from "~/models/user";
@@ -20,43 +21,47 @@ export type CreateBackendOptions = {
   models: Models;
 };
 
-export default class Backend {
-  private app: Koa;
+export default class BackendServer {
+  readonly bind: string;
+  readonly port: number;
+
+  private sessionModel: typeof SessionBase;
+  private userModel: typeof UserBase;
+  private schema: GraphQLSchema;
 
   constructor(opts: CreateBackendOptions) {
-    const app = new Koa();
-
-    if (env["debug_http_delay"] > 0) {
-      app.use((ctx, next) => {
-        if (next) setTimeout(next, env["debug_http_delay"]);
-      });
-    }
+    //if (env["debug_http_delay"] > 0) {
+    //  app.use((ctx, next) => {
+    //    if (next) setTimeout(next, env["debug_http_delay"]);
+    //  });
+    //}
 
     //app.set("trust proxy", env["server_trusted_proxies"]);
 
-    addSessionMiddleware({
-      app,
-      sessionModel: opts.models.Session || Session,
-    });
-    addAuthenticationMiddleware({
-      app,
-      userModel: opts.models.User || User,
-    });
-    addApolloMiddleware({
-      app,
-      schema: opts.schema,
-    });
+    this.sessionModel = opts.models.Session || Session;
+    this.userModel = opts.models.User || User;
+    this.schema = opts.schema;
 
-    this.app = app;
+    this.port = env["server_port"];
+    this.bind = env["server_bind"];
+  }
+
+  getMiddleware(app: Koa): Middleware {
+    const middlewares = [
+      getSessionMiddleware({ sessionModel: this.sessionModel })(app),
+      getAuthenticationMiddleware({ userModel: this.userModel }),
+      getApolloMiddleware({ schema: this.schema }),
+    ];
+
+    return compose(middlewares);
   }
 
   start(): void {
-    this.app.listen(env["server_port"], env["server_bind"], () => {
-      logging.info(
-        "Server started at %s:%d",
-        env["server_bind"],
-        env["server_port"]
-      );
+    const app = new Koa();
+    app.use(this.getMiddleware(app));
+
+    app.listen(this.port, this.bind, () => {
+      logging.info("Server started at %s:%d", this.bind, this.port);
     });
   }
 }

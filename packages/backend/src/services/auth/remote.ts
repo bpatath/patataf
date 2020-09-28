@@ -1,17 +1,16 @@
 import env from "../env";
 import logging from "../logging";
 
-import Koa from "koa";
+import { Middleware } from "koa";
 import passport from "koa-passport";
 import { Strategy, VerifyCallback } from "passport-custom";
 import UserModel from "~/models/user";
 
 type AddRemoteAuthenticationOptions = {
-  app: Koa;
   userModel: typeof UserModel;
 };
 
-export default (opts: AddRemoteAuthenticationOptions): void => {
+export default (opts: AddRemoteAuthenticationOptions): Middleware => {
   const remoteVerify: VerifyCallback = async (req, done) => {
     try {
       /*const trust = req.app.get("trust proxy fn");
@@ -34,9 +33,11 @@ export default (opts: AddRemoteAuthenticationOptions): void => {
     }
   };
   passport.use("remote", new Strategy(remoteVerify));
-  opts.app.use(passport.authenticate("remote", { session: false }));
+  const middleware = passport.authenticate("remote", { session: false });
 
   logging.info(
     "Enabled remote authentication using header: " + env["auth_remote_header"]
   );
+
+  return middleware;
 };

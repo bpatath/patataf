@@ -1,14 +1,15 @@
-import Koa from "koa";
+import { Middleware } from "koa";
 import { ApolloServer } from "apollo-server-koa";
 import { GraphQLSchema } from "graphql";
 import context from "~/schema/context";
 
 export type AddApolloMiddlewareOptions = {
-  app: Koa;
   schema: GraphQLSchema;
 };
 
-export function addApolloMiddleware(opts: AddApolloMiddlewareOptions): void {
+export function getApolloMiddleware(
+  opts: AddApolloMiddlewareOptions
+): Middleware {
   const apollo = new ApolloServer({
     schema: opts.schema,
     context,
@@ -19,8 +20,7 @@ export function addApolloMiddleware(opts: AddApolloMiddlewareOptions): void {
     },
   });
 
-  apollo.applyMiddleware({
-    app: opts.app,
+  return apollo.getMiddleware({
     cors: {
       credentials: true,
     },

@@ -20,5 +20,9 @@ export type Config = {
   };
 
   html: HtmlOptions;
+};
+
+export type SSROptions = {
   ssr?: boolean;
+  ssrRole: "client" | "server";
 };

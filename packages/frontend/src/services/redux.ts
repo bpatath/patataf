@@ -35,12 +35,12 @@ const thunkMiddleware: Middleware = ({ dispatch, getState }) => (next) => (
   return next(action);
 };
 
-export type CreateReduxOptions = {
+export type ReduxOptions = {
   reducers?: Record<string, unknown>;
   ssr?: boolean;
   ssrRole?: "client" | "server";
 };
-export default function createReduxStore(options: CreateReduxOptions): Store {
+export default function createReduxStore(options: ReduxOptions): Store {
   const rootReducer = combineReducers({
     ...options.reducers,
     progress,

@@ -13,14 +13,14 @@ declare global {
   }
 }
 
-export type CreateApolloOptions = {
-  ssr?: boolean;
-  ssrRole?: "client" | "server";
+export type ApolloOptions = {
   schema?: GraphQLSchema;
+  ssr?: boolean;
+  ssrRole: "client" | "server";
 };
 
 export default function createApolloClient(
-  options: CreateApolloOptions
+  options: ApolloOptions
 ): ApolloClient<NormalizedCacheObject> {
   const cache = new InMemoryCache();
   if (options.ssr && window && window.__APOLLO_STATE__) {

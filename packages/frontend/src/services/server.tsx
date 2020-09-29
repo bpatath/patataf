@@ -2,29 +2,28 @@ import React from "react";
 import { renderToString } from "react-dom/server";
 import { StaticRouter } from "react-router-dom";
 import { StaticRouterContext } from "react-router";
-import { Context, Next } from "koa";
+import { Middleware } from "koa";
 
-import App from "./components/App";
-import createStore, { CreateReduxOptions } from "./services/redux";
-import createApollo, { CreateApolloOptions } from "./services/apollo";
+import createStore, { ReduxOptions } from "./redux";
+import createApollo, { ApolloOptions } from "./apollo";
+
+import { Config } from "~/config";
 import html from "~/html";
+import App from "~/components/App";
 
-import { Config } from "./config";
-
-type FrontendMiddleware = (ctx: Context, next: Next) => Promise<void>;
-
-export default function addFrontendMiddleware(
-  config: Config
-): FrontendMiddleware {
-  const reduxOpts: CreateReduxOptions = {
+export default function getServerMiddleware(
+  config: Config,
+  ssr?: boolean
+): Middleware {
+  const reduxOpts: ReduxOptions = {
     ...config.redux,
-    ssr: config.ssr,
     ssrRole: "server",
+    ssr,
   };
-  const apolloOpts: CreateApolloOptions = {
+  const apolloOpts: ApolloOptions = {
     ...config.apollo,
-    ssr: config.ssr,
     ssrRole: "server",
+    ssr,
   };
 
   return async (ctx, next) => {

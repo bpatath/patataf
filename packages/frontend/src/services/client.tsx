@@ -1,26 +1,24 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
-import App from "./components/App";
 
-import createStore, { CreateReduxOptions } from "./services/redux";
-import createApollo, { CreateApolloOptions } from "./services/apollo";
+import createStore from "./redux";
+import createApollo from "./apollo";
 
-import { Config } from "./config";
+import { Config } from "~/config";
+import App from "~/components/App";
 
-export default function createFrontend(config: Config): void {
-  const reduxOpts: CreateReduxOptions = {
+export function renderClient(config: Config, ssr?: boolean): void {
+  const store = createStore({
     ...config.redux,
-    ssr: config.ssr,
     ssrRole: "client",
-  };
-  const apolloOpts: CreateApolloOptions = {
+    ssr,
+  });
+  const client = createApollo({
     ...config.apollo,
-    ssr: config.ssr,
     ssrRole: "client",
-  };
-  const store = createStore(reduxOpts);
-  const client = createApollo(apolloOpts);
+    ssr,
+  });
 
   const container = document.getElementById("root");
   const element = (
@@ -35,7 +33,7 @@ export default function createFrontend(config: Config): void {
     </BrowserRouter>
   );
 
-  if (config.ssr) {
+  if (ssr) {
     ReactDOM.hydrate(element, container);
   } else {
     ReactDOM.render(element, container);

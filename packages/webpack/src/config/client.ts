@@ -3,6 +3,7 @@ import { Configuration } from "webpack";
 import commonConfig, { babelPlugins } from "./common";
 import { merge } from "webpack-merge";
 
+import { BundleAnalyzerPlugin } from "webpack-bundle-analyzer";
 import ReactRefreshWebpackPlugin from "@pmmmwh/react-refresh-webpack-plugin";
 
 const isProd = process.env.NODE_ENV === "production";
@@ -35,7 +36,7 @@ const clientConfig: Configuration = {
         loader: "babel-loader",
         options: {
           presets: [
-            "@babel/env",
+            ["@babel/env", { modules: false /* For webpack tree-shaking */ }],
             ["@babel/preset-react", { development: isDev }],
             "@babel/typescript",
           ],
@@ -57,6 +58,9 @@ const clientConfig: Configuration = {
         sockIntegration: false,
       },*/
     }),
+
+    // Analyzer to optimize bundle size
+    new BundleAnalyzerPlugin({ analyzerHost: "0.0.0.0", analyzerPort: 8889 }), // TODO:
   ],
 
   // Mock modules not available in browser so that importing

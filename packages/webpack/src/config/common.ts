@@ -1,5 +1,5 @@
 import paths from "./paths";
-import { Configuration } from "webpack";
+import webpack, { Configuration } from "webpack";
 
 import WatchMissingNodeModulesPlugin from "react-dev-utils/WatchMissingNodeModulesPlugin";
 
@@ -13,7 +13,9 @@ export const babelPlugins = [
   //"babel-plugin-transform-typescript-metadata",
   ["@babel/plugin-proposal-decorators", { legacy: true }],
   ["@babel/plugin-proposal-class-properties", { loose: true }],
-  "@babel/proposal-object-rest-spread",
+  "@babel/plugin-proposal-object-rest-spread",
+  "@babel/plugin-proposal-optional-chaining",
+  "graphql-tag",
 ];
 if (isDev) {
   babelPlugins.push(require.resolve("react-refresh/babel"));
@@ -30,7 +32,6 @@ const commonConfig: Configuration = {
     filename,
     chunkFilename: filename,
     publicPath: paths.publicPath,
-    globalObject: "typeof self !== 'undefined' ? self : this",
   },
 
   optimization: {
@@ -51,7 +52,10 @@ const commonConfig: Configuration = {
 
   plugins: [
     // Make env variables available in the code
-    //new webpack.DefinePlugin(env.stringified),
+    new webpack.DefinePlugin({
+      "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV),
+      "process.env.SSR": true, // TODO:
+    }),
 
     // Hot updates
     //isDev && new webpack.HotModuleReplacementPlugin(),

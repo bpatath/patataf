@@ -15,14 +15,9 @@ export type Config = {
     reducers?: Record<string, unknown>;
   };
 
-  apollo?: {
-    schema?: GraphQLSchema;
-  };
-
   html: HtmlOptions;
 };
 
 export type SSROptions = {
-  ssr?: boolean;
-  ssrRole: "client" | "server";
+  schema: GraphQLSchema;
 };

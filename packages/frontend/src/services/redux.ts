@@ -37,23 +37,17 @@ const thunkMiddleware: Middleware = ({ dispatch, getState }) => (next) => (
 
 export type ReduxOptions = {
   reducers?: Record<string, unknown>;
-  ssr?: boolean;
-  ssrRole?: "client" | "server";
 };
-export default function createReduxStore(options: ReduxOptions): Store {
+
+export function createReduxStore(options?: ReduxOptions): Store {
   const rootReducer = combineReducers({
-    ...options.reducers,
+    ...options?.reducers,
     progress,
     auth,
   });
 
   let preloadedState = undefined;
-  if (
-    options.ssr &&
-    options.ssrRole === "client" &&
-    window &&
-    window.__REDUX_STATE__
-  ) {
+  if (process.env.SSR && window && window.__REDUX_STATE__) {
     preloadedState = window.__REDUX_STATE__;
     delete window.__REDUX_STATE__;
   }
@@ -61,6 +55,19 @@ export default function createReduxStore(options: ReduxOptions): Store {
   return createStore(
     rootReducer,
     preloadedState,
+    composeEnhancers(applyMiddleware(thunkMiddleware))
+  );
+}
+
+export function createReduxStoreSSR(options?: ReduxOptions): Store {
+  const rootReducer = combineReducers({
+    ...options?.reducers,
+    progress,
+    auth,
+  });
+
+  return createStore(
+    rootReducer,
     composeEnhancers(applyMiddleware(thunkMiddleware))
   );
 }

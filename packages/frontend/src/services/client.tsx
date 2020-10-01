@@ -2,23 +2,15 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
 
-import createStore from "./redux";
-import createApollo from "./apollo";
+import { createReduxStore } from "./redux";
+import { createApolloClient } from "./apollo";
 
 import { Config } from "~/config";
 import App from "~/components/App";
 
-export function renderClient(config: Config, ssr?: boolean): void {
-  const store = createStore({
-    ...config.redux,
-    ssrRole: "client",
-    ssr,
-  });
-  const client = createApollo({
-    ...config.apollo,
-    ssrRole: "client",
-    ssr,
-  });
+export function renderClient(config: Config): void {
+  const store = createReduxStore(config.redux);
+  const client = createApolloClient();
 
   const container = document.getElementById("root");
   const element = (
@@ -33,7 +25,7 @@ export function renderClient(config: Config, ssr?: boolean): void {
     </BrowserRouter>
   );
 
-  if (ssr) {
+  if (process.env.SSR) {
     ReactDOM.hydrate(element, container);
   } else {
     ReactDOM.render(element, container);

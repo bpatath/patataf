@@ -4,31 +4,20 @@ import { StaticRouter } from "react-router-dom";
 import { StaticRouterContext } from "react-router";
 import { Middleware } from "koa";
 
-import createStore, { ReduxOptions } from "./redux";
-import createApollo, { ApolloOptions } from "./apollo";
+import { createReduxStoreSSR } from "./redux";
+import { createApolloClientSSR } from "./apollo";
 
-import { Config } from "~/config";
+import { Config, SSROptions } from "~/config";
 import html from "~/html";
 import App from "~/components/App";
 
 export default function getServerMiddleware(
   config: Config,
-  ssr?: boolean
+  ssr: SSROptions
 ): Middleware {
-  const reduxOpts: ReduxOptions = {
-    ...config.redux,
-    ssrRole: "server",
-    ssr,
-  };
-  const apolloOpts: ApolloOptions = {
-    ...config.apollo,
-    ssrRole: "server",
-    ssr,
-  };
-
   return async (ctx, next) => {
-    const store = createStore(reduxOpts);
-    const client = createApollo(apolloOpts);
+    const store = createReduxStoreSSR(config.redux);
+    const client = createApolloClientSSR(ssr.schema);
 
     const routerContext: StaticRouterContext = {};
     const rootHtml = renderToString(

@@ -19,32 +19,33 @@ export type ApolloOptions = {
   ssrRole: "client" | "server";
 };
 
-export default function createApolloClient(
-  options: ApolloOptions
-): ApolloClient<NormalizedCacheObject> {
+export function createApolloClient(): ApolloClient<NormalizedCacheObject> {
   const cache = new InMemoryCache();
-  if (options.ssr && window && window.__APOLLO_STATE__) {
+  if (process.env.SSR && window && window.__APOLLO_STATE__) {
     cache.restore(window.__APOLLO_STATE__);
   }
 
-  let link;
-  if (options.schema) {
-    link = new SchemaLink({ schema: options.schema });
-  } else {
-    link = new HttpLink({
-      uri: process.env.REACT_APP_BACKEND_URI + "/graphql",
-      credentials: "include",
-    });
-  }
+  const link = new HttpLink({
+    uri: process.env.REACT_APP_BACKEND_URI + "/graphql",
+    credentials: "include",
+  });
 
-  const ssrForceFetchDelay =
-    options.ssr && options.ssrRole == "client" ? 100 : undefined;
-  const ssrMode = options.ssr && options.ssrRole == "server";
-
+  const ssrForceFetchDelay = process.env.SSR ? 100 : undefined;
   return new ApolloClient({
     cache,
     link,
     ssrForceFetchDelay,
-    ssrMode,
+  });
+}
+
+export function createApolloClientSSR(
+  schema: GraphQLSchema
+): ApolloClient<NormalizedCacheObject> {
+  const cache = new InMemoryCache();
+  const link = new SchemaLink({ schema });
+  return new ApolloClient({
+    cache,
+    link,
+    ssrMode: true,
   });
 }

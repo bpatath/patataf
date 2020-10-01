@@ -1,36 +1,33 @@
 import fs from "fs";
-import ora from "ora";
 import webpack from "webpack";
 
 import paths from "./config/paths";
 import clientConfig from "./config/client";
 import serverConfig from "./config/server";
+import { logStats } from "./utils";
 
 export default function build(): void {
-  const spinner = ora();
-  spinner.start("Building");
+  //const spinner = ora();
+  //spinner.start("Building");
   const compiler = webpack([clientConfig, serverConfig]);
+  const logger = compiler.compilers.map((c) =>
+    c.getInfrastructureLogger("build")
+  );
   compiler.run((err, fullStats) => {
     if (err) {
-      spinner.fail("Build failed");
+      //spinner.fail("Build failed");
       console.error(err);
       process.exit(1);
     }
 
+    logStats(compiler.compilers[0], logger[0], fullStats.stats[0]);
+    logStats(compiler.compilers[1], logger[1], fullStats.stats[1]);
+
+    if (fullStats.hasErrors()) {
+      return;
+    }
+
     const stats = fullStats.toJson();
-    if (stats.errors.length) {
-      spinner.fail("Build failed");
-      console.error(stats.errors.join("\n"));
-      process.exit(1);
-    }
-
-    if (stats.warnings.length) {
-      spinner.warn("Built with warnings");
-      console.log(stats.warnings.join("\n"));
-    } else {
-      spinner.succeed("Built");
-    }
-
     [paths.clientStats, paths.serverStats].forEach((file, i) => {
       if (stats.children && stats.children[i]) {
         fs.writeFileSync(file, JSON.stringify(stats.children[i], null, 4), {

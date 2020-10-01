@@ -8,6 +8,7 @@ import requireFromString from "require-from-string";
 import paths from "./config/paths";
 import clientConfig from "./config/client";
 import devServerConfig from "./config/dev-server";
+import { logStats } from "./utils";
 
 class BackendDevMiddleware {
   app: Koa;
@@ -112,23 +113,7 @@ class BackendDevMiddleware {
   }
 
   logStats(stats: webpack.Stats) {
-    const statsString = stats.toString(this.compiler.options.stats);
-    if (statsString.length) {
-      if (stats.hasErrors()) {
-        this.logger.error(statsString);
-      } else if (stats.hasWarnings()) {
-        this.logger.warn(statsString);
-      } else {
-        this.logger.info(statsString);
-      }
-    }
-    if (stats.hasErrors()) {
-      this.logger.info("Backend compilation failed.");
-    } else if (stats.hasWarnings()) {
-      this.logger.info("Backend compilation succeeded with warnings.");
-    } else {
-      this.logger.info("Backend compilation succeeded.");
-    }
+    logStats(this.compiler, this.logger, stats);
   }
 }
 

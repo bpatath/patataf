@@ -10,7 +10,8 @@
   "author": "bpatath <github@bp.patathouse.fr>",
   "homepage": "https://github.com/bpatath/patataf#readme",
   "license": "AGPL-3.0-or-later",
-  "main": "lib/index.js",
+  "main": "lib/es5/index.js",
+  "module": "lib/modules/index.js",
   "directories": {
     "lib": "lib"
   },
@@ -33,7 +34,6 @@
   "dependencies": {
     "@graphql-tools/merge": "^6.1.0",
     "@graphql-tools/schema": "^6.1.0",
-    "apollo-server": "^2.16.1",
     "apollo-server-koa": "^2.16.1",
     "bcrypt": "^5.0.0",
     "koa": "^2.13.0",

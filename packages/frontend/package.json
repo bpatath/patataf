@@ -11,6 +11,8 @@
   "homepage": "https://github.com/bpatath/patataf#readme",
   "license": "AGPL-3.0-or-later",
   "main": "lib/index.js",
+  "module": "lib/index.js",
+  "sideEffects": false,
   "directories": {
     "lib": "lib"
   },
@@ -32,15 +34,16 @@
   },
   "peerDependencies": {
     "react": "^16.13.1",
-    "react-router-dom": "^5.2.0"
+    "react-router-dom": "^5.2.0",
+    "graphql": "^14.0.0",
+    "immutable": "^4.0.0-rc.12",
+    "react-redux": "^7.2.1",
+    "redux": "^4.0.5"
   },
   "dependencies": {
     "@patataf/ui": "^0.1.0",
+    "@patataf/ui": "/home/baptiste/patataf/packages/ui",
     "@apollo/client": "^3.1.1",
-    "graphql": "^15.3.0",
-    "immutable": "^4.0.0-rc.12",
-    "react-redux": "^7.2.1",
-    "redux": "^4.0.5",
     "subscriptions-transport-ws": "^0.9.17"
   },
   "devDependencies": {

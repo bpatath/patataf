@@ -11,6 +11,8 @@
   "homepage": "https://github.com/bpatath/patataf#readme",
   "license": "AGPL-3.0-or-later",
   "main": "lib/index.js",
+  "module": "lib/index.js",
+  "sideEffects": false,
   "directories": {
     "lib": "lib"
   },

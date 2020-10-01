@@ -3,7 +3,9 @@
   "license": "AGPL-3.0-or-later",
   "private": true,
   "scripts": {
-    "build": "lerna exec --parallel 'babel --extensions .ts,.tsx --delete-dir-on-start --config-file ../../.babelrc.js -d lib src'",
+    "build": "make build",
+    "abuild": "lerna exec --parallel 'BABEL_ENV=es5 babel --extensions .ts,.tsx --delete-dir-on-start --config-file ../../.babelrc.js -d lib/es5 src'",
+    "abuild:mod": "lerna exec --parallel 'BABEL_ENV=modules babel --extensions .ts,.tsx --delete-dir-on-start --config-file ../../.babelrc.js -d lib/modules src'",
     "typecheck": "lerna exec --parallel 'tsc'"
   },
   "devDependencies": {
@@ -12,6 +14,7 @@
     "@babel/plugin-proposal-class-properties": "^7.10.4",
     "@babel/plugin-proposal-decorators": "^7.10.5",
     "@babel/plugin-proposal-object-rest-spread": "^7.11.0",
+    "@babel/plugin-proposal-optional-chaining": "^7.11.0",
     "@babel/preset-env": "^7.11.0",
     "@babel/preset-react": "^7.10.4",
     "@babel/preset-typescript": "^7.10.4",
@@ -37,5 +40,10 @@
   "lint-staged": {
     "*.{ts,tsx}": "eslint --cache --fix",
     "*.{ts,tsx,css,md}": "prettier --write"
+  },
+  "dependencies": {
+    "babel-plugin-graphql-tag": "^3.1.0",
+    "graphql": "^15.3.0",
+    "graphql-tag": "^2.11.0"
   }
 }

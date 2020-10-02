@@ -2,6 +2,7 @@ import React from "react";
 import { renderToString } from "react-dom/server";
 import { StaticRouter } from "react-router-dom";
 import { StaticRouterContext } from "react-router";
+import { ServerStyleSheet, StyleSheetManager } from "styled-components";
 import { Middleware } from "koa";
 
 import { createReduxStoreSSR } from "./redux";
@@ -13,6 +14,7 @@ import App from "~/components/App";
 
 export function getSSRMiddleware(config: Config, ssr: SSROptions): Middleware {
   return async (ctx, next) => {
+    const styleSheet = new ServerStyleSheet();
     try {
       const store = createReduxStoreSSR(config.redux);
       const client = createApolloClientSSR(ssr.schema);
@@ -20,13 +22,15 @@ export function getSSRMiddleware(config: Config, ssr: SSROptions): Middleware {
       const routerContext: StaticRouterContext = {};
       const rootHtml = renderToString(
         <StaticRouter location={ctx.url} context={routerContext}>
-          <App
-            store={store}
-            client={client}
-            config={config}
-            theme={config.theme}
-            MainComponent={config.app}
-          />
+          <StyleSheetManager sheet={styleSheet.instance}>
+            <App
+              store={store}
+              client={client}
+              config={config}
+              theme={config.theme}
+              MainComponent={config.app}
+            />
+          </StyleSheetManager>
         </StaticRouter>
       );
 
@@ -38,6 +42,7 @@ export function getSSRMiddleware(config: Config, ssr: SSROptions): Middleware {
       ctx.body = html({
         ...config.html,
         rootHtml,
+        styleTags: styleSheet.getStyleTags(),
       });
     } catch (err) {
       // TODO: log errors
@@ -46,6 +51,8 @@ export function getSSRMiddleware(config: Config, ssr: SSROptions): Middleware {
       } else {
         ctx.statusCode = 500;
       }
+    } finally {
+      styleSheet.seal();
     }
     await next();
   };

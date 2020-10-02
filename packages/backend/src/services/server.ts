@@ -29,6 +29,8 @@ export default class BackendServer {
   private userModel: typeof UserBase;
   private schema: GraphQLSchema;
 
+  private ssrMiddleware?: Middleware;
+
   constructor(opts: CreateBackendOptions) {
     //if (env["debug_http_delay"] > 0) {
     //  app.use((ctx, next) => {
@@ -52,8 +54,15 @@ export default class BackendServer {
       getAuthenticationMiddleware({ userModel: this.userModel }),
       getApolloMiddleware({ schema: this.schema }),
     ];
+    if (this.ssrMiddleware) {
+      middlewares.push(this.ssrMiddleware);
+    }
 
     return compose(middlewares);
+  }
+
+  useSSRMiddleware(middleware: Middleware): void {
+    this.ssrMiddleware = middleware;
   }
 
   start(): void {

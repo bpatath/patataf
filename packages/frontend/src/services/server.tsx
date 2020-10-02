@@ -11,36 +11,42 @@ import { Config, SSROptions } from "~/config";
 import html from "~/html";
 import App from "~/components/App";
 
-export default function getServerMiddleware(
-  config: Config,
-  ssr: SSROptions
-): Middleware {
+export function getSSRMiddleware(config: Config, ssr: SSROptions): Middleware {
   return async (ctx, next) => {
-    const store = createReduxStoreSSR(config.redux);
-    const client = createApolloClientSSR(ssr.schema);
+    try {
+      const store = createReduxStoreSSR(config.redux);
+      const client = createApolloClientSSR(ssr.schema);
 
-    const routerContext: StaticRouterContext = {};
-    const rootHtml = renderToString(
-      <StaticRouter location={ctx.url} context={routerContext}>
-        <App
-          store={store}
-          client={client}
-          config={config}
-          theme={config.theme}
-          MainComponent={config.app}
-        />
-      </StaticRouter>
-    );
+      const routerContext: StaticRouterContext = {};
+      const rootHtml = renderToString(
+        <StaticRouter location={ctx.url} context={routerContext}>
+          <App
+            store={store}
+            client={client}
+            config={config}
+            theme={config.theme}
+            MainComponent={config.app}
+          />
+        </StaticRouter>
+      );
 
-    if (routerContext.url) {
-      ctx.redirect(routerContext.url);
-      return;
+      if (routerContext.url) {
+        ctx.redirect(routerContext.url);
+        return;
+      }
+
+      ctx.body = html({
+        ...config.html,
+        rootHtml,
+      });
+    } catch (err) {
+      // TODO: log errors
+      if (err instanceof URIError) {
+        ctx.statusCode = 400;
+      } else {
+        ctx.statusCode = 500;
+      }
     }
-
-    ctx.body = html({
-      ...config.html,
-      rootHtml,
-    });
     await next();
   };
 }

@@ -1,13 +1,10 @@
-import Koa from "koa";
-import mount from "koa-mount";
-//import frontend from "../../../../src/frontend";
+import frontend from "../../../../src/frontend";
 import backend from "../../../../src/backend";
+import { getSSRMiddleware } from "@patataf/frontend";
 
-const app = new Koa();
-
-//app.mount(frontend.app);
-app.use(mount(backend.app));
-
-app.listen(backend.port, backend.bind, () => {
-  console.log("Server started on " + backend.bind + ":" + backend.port);
-});
+backend.useSSRMiddleware(
+  getSSRMiddleware(frontend, {
+    schema: backend.schema,
+  })
+);
+backend.start();

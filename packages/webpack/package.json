@@ -48,7 +48,6 @@
     "babel-plugin-graphql-tag": "^3.1.0",
     "babel-plugin-transform-typescript-metadata": "^0.3.0",
     "koa": "^2.13.0",
-    "koa-mount": "^4.0.0",
     "koa-webpack": "^6.0.0",
     "memfs": "^3.2.0",
     "react-dev-utils": "^10.2.1",

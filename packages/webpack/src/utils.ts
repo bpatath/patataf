@@ -23,3 +23,7 @@ export function logStats(
     logger.info("Backend compilation succeeded.");
   }
 }
+
+export function excludeFalse<T>(v: T | false): v is T {
+  return !!v;
+}

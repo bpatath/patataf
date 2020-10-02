@@ -9,7 +9,7 @@ import { logStats } from "./utils";
 export default function build(): void {
   //const spinner = ora();
   //spinner.start("Building");
-  const compiler = webpack([clientConfig, serverConfig]);
+  const compiler = webpack([clientConfig(false), serverConfig]);
   const logger = compiler.compilers.map((c) =>
     c.getInfrastructureLogger("build")
   );

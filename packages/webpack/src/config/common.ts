@@ -1,5 +1,6 @@
 import paths from "./paths";
 import webpack, { Configuration } from "webpack";
+import { excludeFalse } from "../utils";
 
 import WatchMissingNodeModulesPlugin from "react-dev-utils/WatchMissingNodeModulesPlugin";
 
@@ -17,9 +18,6 @@ export const babelPlugins = [
   "@babel/plugin-proposal-optional-chaining",
   ["graphql-tag", { importSources: ["@apollo/client"] }],
 ];
-if (isDev) {
-  babelPlugins.push(require.resolve("react-refresh/babel"));
-}
 
 const commonConfig: Configuration = {
   mode: isProd ? "production" : isDev ? "development" : undefined,
@@ -57,12 +55,9 @@ const commonConfig: Configuration = {
       "process.env.SSR": true, // TODO:
     }),
 
-    // Hot updates
-    //isDev && new webpack.HotModuleReplacementPlugin(),
-
     // Watch for 'npm install' on missing deps to start recompiling
     isDev && new WatchMissingNodeModulesPlugin(paths.appNodeModules),
-  ].filter(<T>(v: T | false): v is T => !!v),
+  ].filter(excludeFalse),
 };
 
 export default commonConfig;

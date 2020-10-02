@@ -129,7 +129,7 @@ async function createBackendMiddleware(app: Koa): Promise<Middleware> {
  * Nicely packed into one koa middleware in koa-webpack
  */
 async function createClientMiddleware(): Promise<Middleware> {
-  const compiler = webpack(clientConfig);
+  const compiler = webpack(clientConfig(true));
   return await koaWebpack({
     compiler,
     devMiddleware: {

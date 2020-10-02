@@ -1,0 +1,13 @@
+{
+  "name": "@patataf/server",
+  "version": "0.1.0",
+  "description": "Patataf server.",
+  "author": "bpatath <github@bp.patathouse.fr>",
+  "homepage": "https://github.com/bpatath/patataf#readme",
+  "license": "AGPL-3.0-or-later",
+  "main": "lib/server.js",
+  "dependencies": {
+    "awilix": "^4.2.6",
+    "winston": "^3.3.3"
+  }
+}

@@ -15,4 +15,7 @@ build-ui:
 	cd packages/ui && BABEL_ENV=es5 babel ${BABEL_OPTS} -d lib/es5 src
 	cd packages/ui && BABEL_ENV=modules babel ${BABEL_OPTS} -d lib/modules src
 
-build: build-webpack build-backend build-frontend build-ui
+build-server:
+	cd packages/server && BABEL_ENV=es5 babel ${BABEL_OPTS} -d lib src
+
+build: build-webpack build-backend build-frontend build-ui build-server

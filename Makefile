@@ -8,9 +8,11 @@ build-backend:
 	cd packages/backend && BABEL_ENV=modules babel ${BABEL_OPTS} -d lib/modules src
 
 build-frontend:
-	cd packages/frontend && BABEL_ENV=modules babel ${BABEL_OPTS} -d lib src
+	cd packages/frontend && BABEL_ENV=es5 babel ${BABEL_OPTS} -d lib/es5 src
+	cd packages/frontend && BABEL_ENV=modules babel ${BABEL_OPTS} -d lib/modules src
 
 build-ui:
-	cd packages/ui && BABEL_ENV=modules babel ${BABEL_OPTS} -d lib src
+	cd packages/ui && BABEL_ENV=es5 babel ${BABEL_OPTS} -d lib/es5 src
+	cd packages/ui && BABEL_ENV=modules babel ${BABEL_OPTS} -d lib/modules src
 
 build: build-webpack build-backend build-frontend build-ui

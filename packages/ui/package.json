@@ -10,8 +10,8 @@
   "author": "bpatath <github@bp.patathouse.fr>",
   "homepage": "https://github.com/bpatath/patataf#readme",
   "license": "AGPL-3.0-or-later",
-  "main": "lib/index.js",
-  "module": "lib/index.js",
+  "main": "lib/es5/index.js",
+  "module": "lib/modules/index.js",
   "sideEffects": false,
   "directories": {
     "lib": "lib"

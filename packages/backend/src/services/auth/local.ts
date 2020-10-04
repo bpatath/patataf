@@ -1,24 +1,27 @@
-import env from "../env";
-import logging from "../logging";
-
 import Koa from "koa";
 import Router from "koa-tree-router";
 import bodyParser from "koa-bodyparser";
 import cors from "@koa/cors";
-
+import { Logger } from "winston";
 import passport from "koa-passport";
 import { Strategy, VerifyFunction } from "passport-local";
-import UserModel from "~/models/user";
 
-type AddLocalAuthenticationOptions = {
-  router: Router<unknown, Koa.Context>;
-  userModel: typeof UserModel;
-};
+import { RootConfig, Models } from "~/config";
 
-export default (opts: AddLocalAuthenticationOptions): void => {
+export function getLocalAuthMiddleware({
+  rootConfig,
+  models,
+  logger,
+  router,
+}: {
+  rootConfig: RootConfig;
+  models: Models;
+  logger: Logger;
+  router: Router;
+}): void {
   const localVerify: VerifyFunction = async (username, password, done) => {
     try {
-      const user = await opts.userModel.login({ username, password });
+      const user = await models.User.login({ username, password });
       if (user) {
         done(null, user);
       } else {
@@ -31,27 +34,28 @@ export default (opts: AddLocalAuthenticationOptions): void => {
   passport.use(new Strategy(localVerify));
 
   const corsMiddleware = cors({
-    origin: env["auth_frontend_url"],
+    origin: rootConfig["auth_frontend_url"],
     credentials: true,
   });
 
-  opts.router.options("/local/login", corsMiddleware);
-  opts.router.post(
+  router.options("/local/login", corsMiddleware);
+  router.post(
     "/local/login",
     corsMiddleware,
     bodyParser(),
     passport.authenticate("local")
   );
 
-  opts.router.options("/local/logout", corsMiddleware);
-  opts.router.post(
+  router.options("/local/logout", corsMiddleware);
+  router.post(
     "/local/logout",
     corsMiddleware,
     bodyParser(),
     (ctx: Koa.Context) => ctx.logout()
   );
 
-  logging.info(
-    "Enabled local authentication for origin: " + env["auth_frontend_url"]
+  logger.info(
+    "Enabled local authentication for origin: " +
+      rootConfig["auth_frontend_url"]
   );
-};
+}

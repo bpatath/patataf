@@ -1,20 +1,15 @@
-import env from "~/services/env";
-import Koa, { Middleware } from "koa";
-import Router from "koa-tree-router";
+import { Middleware } from "koa";
 import compose from "koa-compose";
 import passport from "koa-passport";
 
-import addLocalAuthentication from "./local";
-import getRemoteAuthentication from "./remote";
+import { Models } from "~/config";
 import UserModel from "~/models/user";
 
-type AddAuthenticationOptions = {
-  userModel: typeof UserModel;
-};
-
-export function getAuthenticationMiddleware(
-  opts: AddAuthenticationOptions
-): Middleware {
+export function getAuthenticationMiddleware({
+  models,
+}: {
+  models: Models;
+}): Middleware {
   const middlewares: Middleware[] = [];
   middlewares.push(passport.initialize());
   middlewares.push(passport.session());
@@ -27,29 +22,12 @@ export function getAuthenticationMiddleware(
     if (id == null) {
       return done(null);
     }
-    const user = await opts.userModel.findByPk(id);
+    const user = await models.User.findByPk(id);
     if (user == null) {
       return done(null);
     }
     done(null, user);
   });
-
-  const router = new Router();
-
-  addLocalAuthentication({
-    router: router,
-    userModel: opts.userModel,
-  });
-
-  middlewares.push(router.mount("/auth"));
-
-  if (env["auth_remote_enabled"]) {
-    middlewares.push(
-      getRemoteAuthentication({
-        userModel: opts.userModel,
-      })
-    );
-  }
 
   return compose(middlewares);
 }

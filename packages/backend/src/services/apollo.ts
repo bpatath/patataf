@@ -3,15 +3,13 @@ import { ApolloServer } from "apollo-server-koa";
 import { GraphQLSchema } from "graphql";
 import context from "~/schema/context";
 
-export type AddApolloMiddlewareOptions = {
+export function getApolloMiddleware({
+  schema,
+}: {
   schema: GraphQLSchema;
-};
-
-export function getApolloMiddleware(
-  opts: AddApolloMiddlewareOptions
-): Middleware {
+}): Middleware {
   const apollo = new ApolloServer({
-    schema: opts.schema,
+    schema,
     context,
     playground: {
       settings: {

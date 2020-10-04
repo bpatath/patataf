@@ -1,10 +1,5 @@
-import "./services/env";
+export * from "./backend";
 
-export * from "./services/apollo";
-export * from "./services/auth";
-export { default as Backend } from "./services/server";
-
-export { default as initDatabase } from "./services/database";
 export { default as sequelizerc } from "./utils/sequelizerc";
 
 export { default as User, UserBase } from "./models/user";

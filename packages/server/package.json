@@ -8,6 +8,8 @@
   "main": "lib/server.js",
   "dependencies": {
     "awilix": "^4.2.6",
+    "koa": "^2.13.0",
+    "koa-tree-router": "^0.7.0",
     "winston": "^3.3.3"
   }
 }

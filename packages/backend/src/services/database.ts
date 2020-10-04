@@ -1,6 +1,6 @@
-import env, { ConfigError } from "./env";
-import logging from "./logging";
 import fs from "fs";
+import { Logger } from "winston";
+import { RootConfig, ConfigError } from "~/config";
 import { Sequelize, SequelizeOptions, ModelCtor } from "sequelize-typescript";
 
 interface SSLOptions {
@@ -14,75 +14,86 @@ interface SSLOptions {
   rejectUnauthorized?: boolean;
 }
 
-if (
-  !["sqlite", "mysql", "mariadb", "postgres", "mssql"].includes(
-    env["db_dialect"]
-  )
-) {
-  throw new ConfigError("db_dialect", "Invalid dialect");
-}
+const dialects = ["sqlite", "mysql", "mariadb", "postgres", "mssql"];
 
-const sequelizeOptions: SequelizeOptions = {
-  dialect: env["db_dialect"],
-  host: env["db_unix_socket"] || env["db_host"],
-  port: env["db_port"],
-  username: env["db_user"],
-  password: env["db_password"],
-  database: env["db_database"],
-  logging: logging.debug.bind(logging),
-};
+export function createDatabase({
+  rootConfig,
+  logger,
+  models,
+}: {
+  rootConfig: RootConfig;
+  logger: Logger;
+  models: ModelCtor[];
+}): Sequelize {
+  if (!dialects.includes(rootConfig.db_dialect)) {
+    throw new ConfigError(rootConfig, "db_dialect", "Invalid dialect");
+  }
 
-const sslOptions: SSLOptions = {
-  minVersion: env["db_ssl_min_version"],
-  maxVersion: env["db_ssl_max_version"],
-  ciphers: env["db_ssl_ciphers"],
-  rejectUnauthorized: env["db_ssl_verify_server_cert"] === false,
-};
-if (env["db_ssl_ca"]) {
-  sslOptions.ca = fs.readFileSync(env["db_ssl_ca"]);
-}
-if (env["db_ssl_cert"]) {
-  sslOptions.cert = fs.readFileSync(env["db_ssl_cert"]);
-}
-if (env["db_ssl_key"]) {
-  sslOptions.key = fs.readFileSync(env["db_ssl_key"]);
-}
-if (env["db_ssl_dhparam"]) {
-  sslOptions.dhparam = fs.readFileSync(env["db_ssl_dhparam"]);
-}
+  const sequelizeOptions: SequelizeOptions = {
+    dialect: rootConfig["db_dialect"],
+    host: rootConfig["db_unix_socket"] || rootConfig["db_host"],
+    port: rootConfig["db_port"],
+    username: rootConfig["db_user"],
+    password: rootConfig["db_password"],
+    database: rootConfig["db_database"],
+    logging: logger.debug.bind(logger),
+  };
 
-switch (env["db_dialect"]) {
-  case "sqlite":
-    sequelizeOptions.storage = env["sqlite_storage"];
-    break;
+  const sslOptions: SSLOptions = {
+    minVersion: rootConfig["db_ssl_min_version"],
+    maxVersion: rootConfig["db_ssl_max_version"],
+    ciphers: rootConfig["db_ssl_ciphers"],
+    rejectUnauthorized: rootConfig["db_ssl_verify_server_cert"] === false,
+  };
+  if (rootConfig["db_ssl_ca"]) {
+    sslOptions.ca = fs.readFileSync(rootConfig["db_ssl_ca"]);
+  }
+  if (rootConfig["db_ssl_cert"]) {
+    sslOptions.cert = fs.readFileSync(rootConfig["db_ssl_cert"]);
+  }
+  if (rootConfig["db_ssl_key"]) {
+    sslOptions.key = fs.readFileSync(rootConfig["db_ssl_key"]);
+  }
+  if (rootConfig["db_ssl_dhparam"]) {
+    sslOptions.dhparam = fs.readFileSync(rootConfig["db_ssl_dhparam"]);
+  }
 
-  case "mariadb":
-  case "mysql":
-    sequelizeOptions.dialectOptions = {
-      socketPath: env["db_unix_socket"],
-      ssl: sslOptions,
-    };
-    break;
+  switch (rootConfig["db_dialect"]) {
+    case "sqlite":
+      sequelizeOptions.storage = rootConfig["sqlite_storage"];
+      break;
 
-  case "postgres":
-    sequelizeOptions.dialectOptions = {
-      ssl: sslOptions,
-    };
-    break;
+    case "mariadb":
+    case "mysql":
+      sequelizeOptions.dialectOptions = {
+        socketPath: rootConfig["db_unix_socket"],
+        ssl: sslOptions,
+      };
+      break;
 
-  case "mssql":
-    break;
+    case "postgres":
+      sequelizeOptions.dialectOptions = {
+        ssl: sslOptions,
+      };
+      break;
 
-  default:
-    throw new ConfigError("db_dialect", "Invalid database dialect.");
-}
+    case "mssql":
+      break;
 
-export default (models: ModelCtor[]): Sequelize =>
-  new Sequelize({
+    default:
+      throw new ConfigError(
+        rootConfig,
+        "db_dialect",
+        "Invalid database dialect."
+      );
+  }
+
+  return new Sequelize({
     ...sequelizeOptions,
     models,
   });
+}
 
 // For use with sequelize-cli
-export const development = sequelizeOptions;
-export const production = sequelizeOptions;
+//export const development = sequelizeOptions;
+//export const production = sequelizeOptions;

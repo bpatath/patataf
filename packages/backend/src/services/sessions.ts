@@ -1,16 +1,20 @@
-import logging from "./logging";
+import { Logger } from "winston";
 import Koa, { Middleware } from "koa";
 import session, { Session } from "koa-session";
-import SessionBase from "~/models/session";
 
-export type AddSessionMiddlewareOptions = {
-  sessionModel: typeof SessionBase;
-};
-export function getSessionMiddleware(
-  opts: AddSessionMiddlewareOptions
-): (Koa) => Middleware {
+import { Models } from "~/config";
+
+export function getSessionMiddleware({
+  models,
+  logger,
+  app,
+}: {
+  models: Models;
+  logger: Logger;
+  app: Koa;
+}): Middleware {
   async function get(key: string) {
-    const session = await opts.sessionModel.findByPk(key);
+    const session = await models.Session.findByPk(key);
     if (!session) {
       return null;
     }
@@ -21,18 +25,18 @@ export function getSessionMiddleware(
     try {
       return JSON.parse(session.data);
     } catch (err) {
-      logging.error("Error while parsing session data:", err);
+      logger.error("Error while parsing session data:", err);
     }
   }
 
   async function set(key: string, sess: Session, maxAge: number | "session") {
-    const session = await opts.sessionModel.findByPk(key);
+    const session = await models.Session.findByPk(key);
     const expires =
       maxAge != "session" ? new Date(new Date().getTime() + maxAge) : null;
     if (session) {
       session.update({ data: JSON.stringify(sess), expires });
     } else {
-      opts.sessionModel.create({
+      models.Session.create({
         id: key,
         data: JSON.stringify(sess),
         expires,
@@ -41,24 +45,23 @@ export function getSessionMiddleware(
   }
 
   async function destroy(key: string) {
-    const session = await opts.sessionModel.findByPk(key);
+    const session = await models.Session.findByPk(key);
     if (session) {
       await session.destroy();
     }
   }
 
-  return (app: Koa) =>
-    session(
-      {
-        key: "poaf.session",
-        httpOnly: true,
-        secure: true,
-        store: {
-          get,
-          set,
-          destroy,
-        },
+  return session(
+    {
+      key: "patataf.session",
+      httpOnly: true,
+      secure: true,
+      store: {
+        get,
+        set,
+        destroy,
       },
-      app
-    );
+    },
+    app
+  );
 }

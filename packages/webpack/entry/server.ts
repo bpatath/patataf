@@ -1,10 +1,10 @@
-import frontend from "../../../../src/frontend";
-import backend from "../../../../src/backend";
-import { getSSRMiddleware } from "@patataf/frontend";
+import Server from "@patataf/server";
+import { getBackendMiddleware } from "@patataf/backend";
+import { getFrontendSSRMiddleware } from "@patataf/frontend";
+import frontendConfig from "../../../../src/frontend";
+import backendConfig from "../../../../src/backend";
 
-backend.useSSRMiddleware(
-  getSSRMiddleware(frontend, {
-    schema: backend.schema,
-  })
-);
-backend.start();
+const server = new Server();
+server.useBackend(getBackendMiddleware, backendConfig);
+server.useFrontend(getFrontendSSRMiddleware, frontendConfig);
+server.start();

@@ -1,3 +1,4 @@
+import webpack from "webpack";
 import paths from "./paths";
 import { Configuration } from "webpack";
 import commonConfig, { babelPlugins } from "./common";
@@ -33,6 +34,12 @@ export const serverBase: Configuration = merge(commonConfig, {
       },
     ],
   },
+
+  plugins: [
+    new webpack.DefinePlugin({
+      "process.env.CLIENT_OUTPUT": JSON.stringify(paths.clientOutput),
+    }),
+  ],
 });
 
 const serverConfig: Configuration = {

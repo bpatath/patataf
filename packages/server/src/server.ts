@@ -1,5 +1,6 @@
 import Koa, { Middleware } from "koa";
 import Router from "koa-tree-router";
+import serve from "koa-static";
 import { createContainer, AwilixContainer, asFunction, asValue } from "awilix";
 
 import { Logger } from "winston";
@@ -31,6 +32,10 @@ export default class Server {
       logger: asFunction(createLogger).singleton(),
       app: asValue(this.app),
     });
+  }
+
+  serve(path: string): void {
+    this.app.use(serve(path));
   }
 
   useBackend(backend: MiddlewareDI, backendConfig: ObjConf): void {

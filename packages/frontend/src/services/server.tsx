@@ -13,15 +13,20 @@ import { GraphQLSchema } from "graphql";
 import html from "~/html";
 import App from "~/components/App";
 
+interface RootConfig {
+  public_path: string;
+}
 interface BackendConfig {
   schema: GraphQLSchema;
 }
 
 export function getFrontendSSRMiddleware({
+  rootConfig,
   frontendConfig,
   backendConfig,
   logger,
 }: {
+  rootConfig: RootConfig;
   frontendConfig: Config;
   backendConfig: BackendConfig;
   logger: Logger;
@@ -54,6 +59,7 @@ export function getFrontendSSRMiddleware({
 
       ctx.body = html({
         ...frontendConfig.html,
+        publicPath: rootConfig.public_path,
         rootHtml,
         styleTags: styleSheet.getStyleTags(),
       });

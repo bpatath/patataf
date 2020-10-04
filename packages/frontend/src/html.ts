@@ -3,10 +3,10 @@ export type HtmlOptions = {
   description: string;
   rootHtml?: string;
   styleTags: string;
+  publicPath: string;
 };
 
 export default function generateHtml(opts: HtmlOptions): string {
-  const public_path = process.env.FRONTEND_PUBLIC_PATH;
   return `<!DOCTYPE html>
   <html lang="en">
     <head>
@@ -15,8 +15,9 @@ export default function generateHtml(opts: HtmlOptions): string {
       <meta name="theme-color" content="#000000" />
       <meta name="description" content="${opts.description}"/>
 
-      <link rel="icon" href="${public_path}/favicon.ico" />
-      <link rel="apple-touch-icon" href="${public_path}/logo192.png" />
+      <link rel="icon" href="${opts.publicPath}/favicon.ico" />
+      <link rel="apple-touch-icon" href="${opts.publicPath}/logo192.png" />
+      <script src="${opts.publicPath}/static/js/vendors.chunk.js"></script>
 
       <title>${opts.title}</title>
       <style>html, body, #root { widht: 100%; height: 100%; margin: 0; padding: 0; }</style>
@@ -25,6 +26,7 @@ export default function generateHtml(opts: HtmlOptions): string {
     <body>
       <noscript>You need to enable JavaScript to run this app.</noscript>
       <div id="root">${opts.rootHtml}</div>
+      <script src="${opts.publicPath}/static/js/main.chunk.js"></script>
     </body>
   </html>`;
 }

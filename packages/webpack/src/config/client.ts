@@ -18,12 +18,9 @@ function clientConfig(hmr: boolean): Configuration {
     ...babelPlugins,
     hmr && require.resolve("react-refresh/babel"),
   ].filter(excludeFalse);
-  /*if (hmr) {
-    clientBabelPlugins.push(require.resolve("react-refresh/babel"));
-  }*/
 
   return {
-    entry: isDev
+    entry: hmr
       ? [webpackDevClientEntry, paths.clientEntry]
       : [paths.clientEntry],
 
@@ -33,8 +30,13 @@ function clientConfig(hmr: boolean): Configuration {
 
     optimization: {
       splitChunks: {
-        chunks: "all",
-        name: false,
+        cacheGroups: {
+          commons: {
+            test: /[\\/]node_modules[\\/]/,
+            name: "vendors",
+            chunks: "all",
+          },
+        },
       },
     },
 

@@ -8,16 +8,29 @@ import { Middleware } from "koa";
 import { createReduxStoreSSR } from "./redux";
 import { createApolloClientSSR } from "./apollo";
 
-import { Config, SSROptions } from "~/config";
+import { Config } from "~/config";
+import { GraphQLSchema } from "graphql";
 import html from "~/html";
 import App from "~/components/App";
 
-export function getSSRMiddleware(config: Config, ssr: SSROptions): Middleware {
+interface BackendConfig {
+  schema: GraphQLSchema;
+}
+
+export function getFrontendSSRMiddleware({
+  frontendConfig,
+  backendConfig,
+  logger,
+}: {
+  frontendConfig: Config;
+  backendConfig: BackendConfig;
+  logger: Logger;
+}): Middleware {
   return async (ctx, next) => {
     const styleSheet = new ServerStyleSheet();
     try {
-      const store = createReduxStoreSSR(config.redux);
-      const client = createApolloClientSSR(ssr.schema);
+      const store = createReduxStoreSSR(frontendConfig.redux);
+      const client = createApolloClientSSR(backendConfig.schema);
 
       const routerContext: StaticRouterContext = {};
       const rootHtml = renderToString(
@@ -26,9 +39,9 @@ export function getSSRMiddleware(config: Config, ssr: SSROptions): Middleware {
             <App
               store={store}
               client={client}
-              config={config}
-              theme={config.theme}
-              MainComponent={config.app}
+              config={frontendConfig}
+              theme={frontendConfig.theme}
+              MainComponent={frontendConfig.app}
             />
           </StyleSheetManager>
         </StaticRouter>
@@ -40,15 +53,15 @@ export function getSSRMiddleware(config: Config, ssr: SSROptions): Middleware {
       }
 
       ctx.body = html({
-        ...config.html,
+        ...frontendConfig.html,
         rootHtml,
         styleTags: styleSheet.getStyleTags(),
       });
     } catch (err) {
-      // TODO: log errors
       if (err instanceof URIError) {
         ctx.statusCode = 400;
       } else {
+        logger.error(err);
         ctx.statusCode = 500;
       }
     } finally {

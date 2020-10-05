@@ -1,5 +1,7 @@
 import paths from "./paths";
 import { Configuration } from "webpack";
+import { CleanWebpackPlugin } from "clean-webpack-plugin";
+import CompressionPlugin from "compression-webpack-plugin";
 import { merge } from "webpack-merge";
 import commonConfig, { babelPlugins } from "./common";
 import { excludeFalse } from "../utils";
@@ -62,6 +64,9 @@ function clientConfig(hmr: boolean): Configuration {
     },
 
     plugins: [
+      // Clean output directory
+      new CleanWebpackPlugin(),
+
       // React refresh (from CRA config)
       hmr &&
         new ReactRefreshWebpackPlugin({
@@ -72,8 +77,14 @@ function clientConfig(hmr: boolean): Configuration {
         },*/
         }),
 
+      // Compress output
+      new CompressionPlugin(),
+
       // Analyzer to optimize bundle size
-      new BundleAnalyzerPlugin({ analyzerHost: "0.0.0.0", analyzerPort: 8889 }), // TODO:
+      new BundleAnalyzerPlugin({
+        analyzerMode: "static",
+        reportFilename: paths.clientReport,
+      }),
     ].filter(excludeFalse),
 
     // Mock modules not available in browser so that importing

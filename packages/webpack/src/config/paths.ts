@@ -24,6 +24,7 @@ const paths = {
   publicPath: "/assets",
   clientStats: "build/clientStats.json",
   serverStats: "build/serverStats.json",
+  clientReport: appPath("public", "report.html"),
 };
 
 export function resolveAppModule(name: string): string {

@@ -1,6 +1,7 @@
 import webpack from "webpack";
 import paths from "./paths";
 import { Configuration } from "webpack";
+import { CleanWebpackPlugin } from "clean-webpack-plugin";
 import commonConfig, { babelPlugins } from "./common";
 import { merge } from "webpack-merge";
 import nodeExternals from "webpack-node-externals";
@@ -36,6 +37,9 @@ export const serverBase: Configuration = merge(commonConfig, {
   },
 
   plugins: [
+    // Clean output directory
+    new CleanWebpackPlugin(),
+
     new webpack.DefinePlugin({
       "process.env.CLIENT_OUTPUT": JSON.stringify(paths.clientOutput),
     }),

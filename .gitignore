@@ -2,3 +2,4 @@
 **/yarn.lock
 **/lib/
 .eslintcache
+**/yarn-error.log

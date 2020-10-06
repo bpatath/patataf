@@ -5,7 +5,7 @@
   "author": "bpatath <github@bp.patathouse.fr>",
   "homepage": "https://github.com/bpatath/patataf#readme",
   "license": "AGPL-3.0-or-later",
-  "main": "lib/server.js",
+  "main": "lib/index.js",
   "dependencies": {
     "awilix": "^4.2.6",
     "koa": "^2.13.0",

@@ -1,11 +1,5 @@
-import { getSSRMiddleware } from "@patataf/frontend";
-import backend from "../../../../src/backend";
-import frontendConfig from "../../../../src/frontend";
+export { getBackendMiddleware as backend } from "@patataf/backend";
+export { getFrontendSSRMiddleware as frontend } from "@patataf/frontend";
 
-const ssrMiddleware = getSSRMiddleware(frontendConfig, {
-  schema: backend.schema,
-});
-
-backend.setSSRMiddleware(ssrMiddleware);
-
-export default backend;
+export { default as frontendConfig } from "../../../../src/frontend";
+export { default as backendConfig } from "../../../../src/backend";

@@ -37,9 +37,6 @@ export const serverBase: Configuration = merge(commonConfig, {
   },
 
   plugins: [
-    // Clean output directory
-    new CleanWebpackPlugin(),
-
     new webpack.DefinePlugin({
       "process.env.CLIENT_OUTPUT": JSON.stringify(paths.clientOutput),
     }),
@@ -52,6 +49,11 @@ const serverConfig: Configuration = {
     path: paths.serverOutput,
     filename: "server.js",
   },
+
+  plugins: [
+    // Clean output directory
+    new CleanWebpackPlugin(),
+  ],
 };
 
 export default merge(serverBase, serverConfig);

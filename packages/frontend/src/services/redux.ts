@@ -23,7 +23,9 @@ declare global {
 
 const composeEnhancers =
   process.env.NODE_ENV == "development"
-    ? (window && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose
+    ? (typeof window !== "undefined" &&
+        window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) ||
+      compose
     : compose;
 
 const thunkMiddleware: Middleware = ({ dispatch, getState }) => (next) => (

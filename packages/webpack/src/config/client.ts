@@ -22,9 +22,10 @@ function clientConfig(hmr: boolean): Configuration {
   ].filter(excludeFalse);
 
   return {
-    entry: hmr
+    /*entry: hmr
       ? [webpackDevClientEntry, paths.clientEntry]
-      : [paths.clientEntry],
+      : [paths.clientEntry],*/
+    entry: [paths.clientEntry],
 
     output: {
       path: paths.clientOutput,

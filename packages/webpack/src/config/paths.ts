@@ -21,7 +21,7 @@ const paths = {
   serverEntry: require.resolve("../../entry/server.ts"),
   devServerEntry: require.resolve("../../entry/dev-server.ts"),
 
-  publicPath: "/assets",
+  publicPath: "/",
   clientStats: "build/clientStats.json",
   serverStats: "build/serverStats.json",
   clientReport: appPath("public", "report.html"),

@@ -17,6 +17,12 @@ async function addClientMiddleware(server: DevServer): Promise<void> {
       devMiddleware: {
         publicPath: paths.publicPath,
       },
+      hotClient: {
+        host: {
+          client: "*",
+          server: server.container.cradle.rootConfig.server_bind,
+        },
+      },
     })
   );
 }

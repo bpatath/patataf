@@ -18,4 +18,7 @@ build-ui:
 build-server:
 	cd packages/server && BABEL_ENV=es5 babel ${BABEL_OPTS} -d lib src
 
-build: build-webpack build-backend build-frontend build-ui build-server
+build-docker:
+	cd packages/docker && BABEL_ENV=es5 babel ${BABEL_OPTS} -d lib src
+
+build: build-webpack build-backend build-frontend build-ui build-server build-docker
